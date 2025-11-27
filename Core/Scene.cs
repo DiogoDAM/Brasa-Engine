@@ -48,6 +48,19 @@ public class Scene : IDisposable
 		layer.Removed();
 	}
 
+	public Layer GetLayer(string name)
+	{
+		return Layers.Find(layer => layer.Name == name);
+	}
+
+	public bool TryGetLayer(string name, out Layer layer)
+	{
+		layer = Layers.Find(layer => layer.Name == name);
+
+		if(layer == null) return false;
+		return true;
+	}
+
 	public virtual void Added()
 	{
 		Active = true;

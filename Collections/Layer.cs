@@ -1,11 +1,12 @@
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using Microsoft.Xna.Framework.Graphics;
 
 namespace Brasa;
 
-public sealed class Layer : IDisposable
+public sealed class Layer : IDisposable, IEnumerable, IEnumerable<GameObject>
 {
 	private List<GameObject> m_objects;
 	public int Count => m_objects.Count;
@@ -14,11 +15,14 @@ public sealed class Layer : IDisposable
 	public bool Visible;
 	public bool Alive;
 
+	public string Name;
+
 	public SamplerState SamplerState = SamplerState.PointWrap;
 
-	public Layer()
+	public Layer(string name="")
 	{
 		m_objects = new();
+		Name = name;
 	}
 
 	public void Added()
@@ -114,4 +118,14 @@ public sealed class Layer : IDisposable
 		Destroy();
 		GC.SuppressFinalize(this);
 	}
+
+    public IEnumerator<GameObject> GetEnumerator()
+    {
+		return m_objects.GetEnumerator();
+    }
+
+    System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator()
+    {
+        return GetEnumerator();
+    }
 }

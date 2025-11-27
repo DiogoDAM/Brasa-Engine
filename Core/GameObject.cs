@@ -16,6 +16,9 @@ public class GameObject : IDisposable
 
 	public Vector2 Position;
 
+	public Collider Collider;
+	public bool Collidable=true;
+
 	public GameObject()
 	{
 	}
@@ -49,6 +52,26 @@ public class GameObject : IDisposable
 
 	public virtual void Draw()
 	{
+	}
+
+	public void AddCollider(Collider col)
+	{
+		Collider = col;
+	}
+
+	public void RemoveCollider()
+	{
+		Collider = null;
+	}
+
+	public bool Collides(GameObject other)
+	{
+		if(Collidable && other.Collidable && Collider != null && other.Collider != null && Alive && other.Alive)
+		{
+			return Collider.Collides(other.Collider);
+		}
+
+		return false;
 	}
 
 	public void Kill()

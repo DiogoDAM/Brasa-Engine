@@ -9,6 +9,7 @@ public class Entity : GameObject
 {
 	public Sprite Sprite;
 
+
 	public int Width
 	{
 		get { return Sprite.Width; }
@@ -78,6 +79,8 @@ public class Entity : GameObject
 	}
 
 	public void CenterOrigin() { Sprite.CenterOrigin(); }
+
+
 
 	public override void Dispose()
 	{
