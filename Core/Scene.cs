@@ -61,6 +61,26 @@ public class Scene : IDisposable
 		return true;
 	}
 
+	public void CheckCollisions(string layer1, string layer2)
+	{
+		Utilities.Collides(GetLayer(layer1), GetLayer(layer2));
+	}
+
+	public void CheckOverlap(string layer1, string layer2, Action<GameObject, GameObject> resolveCallback)
+	{
+		Utilities.Overlap(GetLayer(layer1), GetLayer(layer2), resolveCallback);
+	}
+
+	public void CheckCollisions(Layer layer1, Layer layer2)
+	{
+		Utilities.Collides(layer1, layer2);
+	}
+
+	public void CheckOverlap(Layer layer1, Layer layer2, Action<GameObject, GameObject> resolveCallback)
+	{
+		Utilities.Overlap(layer1, layer2, resolveCallback);
+	}
+
 	public virtual void Added()
 	{
 		Active = true;

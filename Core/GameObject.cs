@@ -1,6 +1,4 @@
 using System;
-using System.Collections;
-using System.Collections.Generic;
 
 using Microsoft.Xna.Framework;
 
@@ -14,20 +12,29 @@ public class GameObject : IDisposable
 	public bool Alive { get; protected set; }
 	public bool ToDestroy { get; protected set; }
 
+	public string Name;
+
 	public Vector2 Position;
+	public Vector2 Scale;
+	private float m_rotation;
+	public virtual float Rotation
+	{
+		get { return m_rotation; }
+		set { m_rotation = value; }
+	}
 
 	public Collider Collider;
-	public bool Collidable=true;
+	public bool Collidable;
+	public bool ColliderMove=true;
 
-	public GameObject()
+	public GameObject() : base()
 	{
 	}
 
-	public GameObject(int x, int y)
+	public GameObject(int x, int y) : base()
 	{
 		Position = new Vector2(x, y);
 	}
-
 	public virtual void Added()
 	{
 		Active = true;
@@ -48,25 +55,44 @@ public class GameObject : IDisposable
 
 	public virtual void Update()
 	{
+		if(Collider != null && ColliderMove) Collider.Position = Position;
 	}
 
 	public virtual void Draw()
 	{
 	}
 
+	public virtual void Kill()
+	{
+		Alive = false;
+	}
+
+	public virtual void Revive()
+	{
+		Alive = true;
+	}
+
+	public virtual void Destroy()
+	{
+		Kill();
+		ToDestroy = true;
+	}
+
 	public void AddCollider(Collider col)
 	{
 		Collider = col;
+		Collidable = true;
 	}
 
 	public void RemoveCollider()
 	{
 		Collider = null;
+		Collidable = false;
 	}
 
 	public bool Collides(GameObject other)
 	{
-		if(Collidable && other.Collidable && Collider != null && other.Collider != null && Alive && other.Alive)
+		if(Collidable && other.Collidable && Alive && other.Alive)
 		{
 			return Collider.Collides(other.Collider);
 		}
@@ -74,20 +100,41 @@ public class GameObject : IDisposable
 		return false;
 	}
 
-	public void Kill()
+	public virtual void CollisionEnter(GameObject other)
 	{
-		Alive = false;
 	}
 
-	public void Revive()
+
+	public void MoveToObject(GameObject other, float speed)
 	{
-		Alive = true;
+		Vector2 dir = other.Position - Position;
+
+		if(dir.Length() <= speed) { Position = other.Position; return; }
+
+		dir.Normalize();
+
+		Position += dir * speed;
 	}
 
-	public void Destroy()
+	public float DistanceToObject(GameObject other)
 	{
-		Kill();
-		ToDestroy = true;
+		return (other.Position - Position).Length();
+	}
+
+	public void LookAt(GameObject other)
+	{
+		Vector2 dir = other.Position - Position;
+		dir.Normalize();
+
+		Rotation = (float)Math.Atan2(dir.Y, dir.X);
+	}
+
+	public void LookAt(Vector2 target)
+	{
+		Vector2 dir = target - Position;
+		dir.Normalize();
+
+		Rotation = (float)Math.Atan2(dir.Y, dir.X);
 	}
 
 	public virtual void Dispose()
@@ -95,6 +142,7 @@ public class GameObject : IDisposable
 		if(!Disposed)
 		{
 			Disposed = true;
+			RemoveCollider();
 			GC.SuppressFinalize(this);
 		}
 	}

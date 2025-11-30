@@ -22,7 +22,7 @@ public class Entity : GameObject
 		set { Sprite.Height = value; }
 	}
 
-	public float Rotation
+	public override float Rotation
 	{
 		get { return Sprite.Rotation; }
 		set { Sprite.Rotation = value; }

@@ -24,6 +24,11 @@ public abstract class Collider : IDisposable
 	public abstract bool Collides(Vector2 vec);
 	public abstract bool Collides(BoxCollider other);
 
+	public void MoveBy(Vector2 pos)
+	{
+		Position = pos;
+	}
+
 	public virtual void Dispose()
 	{
 	}
